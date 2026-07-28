@@ -89,5 +89,6 @@ MIT — Based on the NINA Plugin Template by isbeorn.
 
 - [AAPA Hardware](https://astrophiloslab.com/aapa)
 - [AAPA GitHub](https://github.com/AstrophilosLab/AAPA)
+- [NINA](https://github.com/isbeorn/nina)
 - [TPPA Plugin](https://github.com/isbeorn/nina.plugin.polaralignment)
 - [NINA Plugin Template](https://github.com/isbeorn/nina.plugin.template)
