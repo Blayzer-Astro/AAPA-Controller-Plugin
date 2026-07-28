@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 
 // Author
 [assembly: AssemblyCompany("Blayzer")]
-[assembly: AssemblyProduct("NINA AAPA Plugin")]
+[assembly: AssemblyProduct("NINA AAPA Controller")]
 [assembly: AssemblyCopyright("Copyright © 2025")]
 
 // ── Recommended metadata ────────────────────────────────────────────────────
