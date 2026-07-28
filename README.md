@@ -1,126 +1,127 @@
 # NINA AAPA Plugin
 
-Ein NINA-Plugin das das **AAPA** (Astrophilos Automated Polar Alignment) Gerät mit dem **TPPA** (Three Point Polar Alignment) Plugin verbindet.
+A NINA plugin that connects the **AAPA** (Astrophilos Automated Polar Alignment) device to the **TPPA** (Three Point Polar Alignment) plugin.
 
-## Übersicht
+## Overview
 
 | | |
 |--|--|
-| **Hardware** | AAPA — FYSETC E4 (ESP32) mit 2 Schrittmotoren (Azimuth + Altitude) |
-| **Software** | NINA 3.x + TPPA Plugin von isbeorn |
-| **Kommunikation** | Seriell (USB/COM), 115200 Baud |
+| **Hardware** | AAPA — FYSETC E4 (ESP32) with 2 stepper motors (Azimuth + Altitude) |
+| **Software** | NINA 3.x + TPPA Plugin by isbeorn |
+| **Communication** | Serial (USB/COM), 115200 Baud |
 
-Das Plugin ersetzt das separate `platedual.py` / `platedual.exe` Tool und integriert die AAPA-Steuerung direkt in NINA.
+This plugin replaces the standalone `platedual.py` / `platedual.exe` tool and integrates AAPA control directly into NINA.
 
-## Funktionen
+## Features
 
-- 🔌 **Auto-Verbindung** — Erkennt das AAPA automatisch auf allen COM-Ports
-- 📡 **TPPA-Integration** — Liest Polausrichtungsfehler aus NINA-Logs in Echtzeit
-- 🤖 **Auto-Pilot** — Berechnet und sendet automatisch Korrekturbewegungen bis zur Toleranz
-- 🕹️ **Manuelle Steuerung** — Azimuth/Altitude per Klick in konfigurierbaren Schritten
-- 🏠 **Homing** — StallGuard-Homing der Altitude-Achse (Y)
-- 📋 **Sequence Instruction** — „AAPA Auto-Align" für vollautomatische Sequenzen
-- ⚙️ **Konfigurierbar** — Getriebe-Ratio, Mikroschritte, Backlash, Speed/Accel
+- 🔌 **Auto-Connection** — Automatically detects the AAPA on all COM ports
+- 📡 **TPPA Integration** — Reads polar alignment errors from NINA logs in real-time
+- 🤖 **Auto-Pilot** — Calculates and automatically sends correction movements until within tolerance
+- 🕹️ **Manual Control** — Azimuth/Altitude click controls with configurable step sizes
+- 🏠 **Homing** — StallGuard homing for the Altitude axis (Y)
+- 📋 **Sequence Instruction** — "AAPA Auto-Align" for fully automated sequences
+- ⚙️ **Configurable** — Gear ratio, microstepping, backlash, speed/accel
 
 ## Installation
 
-### Voraussetzungen
+### Requirements
 - NINA 3.0+
-- TPPA Plugin (von isbeorn, aus dem NINA Plugin-Manager)
-- .NET 8 SDK (zum Kompilieren)
-- Visual Studio 2022 oder `dotnet build`
+- TPPA Plugin (by isbeorn, from the NINA plugin manager)
+- .NET 8 SDK (for compiling)
+- Visual Studio 2022 or `dotnet build`
 
-### Kompilieren & Installieren
+### Compiling & Installing
 
 ```powershell
 cd nina.plugin.aapa
 
-# Debug-Build
+# Debug build
 dotnet build
 
-# Release-Build (kopiert DLL automatisch nach %LOCALAPPDATA%\NINA\Plugins\)
+# Release build (automatically copies the DLL to %LOCALAPPDATA%\NINA\Plugins\)
 dotnet build -c Release
 ```
 
-NINA starten → Plugins → AAPA Controller erscheint in der Plugin-Liste.
+Start NINA → Plugins → AAPA Controller will appear in the plugin list.
 
-### Manuell
-Die `NINA.Plugin.AAPA.dll` in folgendes Verzeichnis kopieren:
+### Manual Installation
+Copy the `NINA.Plugin.AAPA.dll` to the following directory:
 ```
 %LOCALAPPDATA%\NINA\Plugins\NINA.Plugin.AAPA\
 ```
 
-## Verwendung
+## Usage
 
-### 1. Verbindung herstellen
+### 1. Connecting
 
-Im Dockable-Panel:
-1. COM-Port auswählen (oder „Auto" für automatische Erkennung)
-2. **Connect** klicken
-3. LED grün → verbunden
+In the dockable panel:
+1. Select the COM port (or "Auto" for automatic detection)
+2. Click **Connect**
+3. LED turns green → connected
 
-### 2. Polausrichtung mit Auto-Pilot
+### 2. Polar Alignment with Auto-Pilot
 
-1. TPPA-Messung starten (in TPPA Plugin „Measure" klicken)
-2. Im AAPA-Panel: **▶ Start Auto-Pilot** klicken
-3. Der Auto-Pilot liest die TPPA-Fehler und sendet Korrekturen bis zur Toleranz
+1. Start TPPA measurement (click "Measure" in the TPPA plugin)
+2. In the AAPA panel: click **▶ Start Auto-Pilot**
+3. The Auto-Pilot reads the TPPA errors and sends corrections until within tolerance
 
-### 3. Automatisierung (Sequence)
+### 3. Automation (Sequence)
 
-1. Sequence Instruction „**AAPA Auto-Align**" nach einem TPPA-Schritt einfügen
-2. Toleranz, Max. Iterationen und Settle-Zeit konfigurieren
-3. Sequenz starten → vollautomatisch!
+1. Add the sequence instruction "**AAPA Auto-Align**" after a TPPA step
+2. Configure tolerance, max iterations, and settle time
+3. Start the sequence → fully automated!
 
-## Konfiguration
+## Configuration
 
-| Parameter | Standard | Beschreibung |
+| Parameter | Default | Description |
 |-----------|---------|--------------|
-| Steps/Rev | 200 | Vollschritte pro Motorumdrehung (NEMA 17 = 200) |
-| Microsteps | 16 | Mikroschrittmodus (wie in AAPA-Firmware eingestellt) |
-| Gear Ratio | 1.0 | Getriebeübersetzung Motor → Teleskop-Achse |
-| Tolerance | 0.01° | Auto-Pilot stoppt wenn Fehler unter diesem Wert |
-| Settle Time | 3 s | Wartezeit nach jeder Bewegung vor nächster Messung |
-| Max Iterations | 20 | Maximale Korrekturschritte (0 = unbegrenzt) |
-| Max Correction | 0.5° | Maximale Korrektur pro Iteration |
+| Steps/Rev | 200 | Full steps per motor revolution (NEMA 17 = 200) |
+| Microsteps | 16 | Microstep mode (as configured in the AAPA firmware) |
+| Gear Ratio | 1.0 | Gear ratio from motor to telescope axis |
+| Tolerance | 0.01° | Auto-Pilot stops when the error is below this value |
+| Settle Time | 3 s | Wait time after each movement before the next measurement |
+| Max Iterations | 20 | Maximum correction steps (0 = unlimited) |
+| Max Correction | 0.5° | Maximum correction per iteration |
 
-## AAPA Serielles Protokoll
+## AAPA Serial Protocol
 
-| Befehl | Funktion |
+| Command | Function |
 |--------|---------|
-| `X<n>` | Azimuth N Schritte bewegen |
-| `Y<n>` | Altitude N Schritte bewegen |
-| `:STATUS` | Status abfragen (Pos, Busy, Homed) |
-| `:STOP` | Notfall-Stop |
-| `:HOMEY` | Y-Achse homen (StallGuard) |
-| `:SPDX <n>` | Azimuth Geschwindigkeit (step/s) |
-| `:SPDY <n>` | Altitude Geschwindigkeit (step/s) |
-| `:ACCX <n>` | Azimuth Beschleunigung (step/s²) |
-| `:ACCY <n>` | Altitude Beschleunigung (step/s²) |
-| `:SAVE` | Konfiguration in Flash speichern |
+| `X<n>` | Move Azimuth N steps |
+| `Y<n>` | Move Altitude N steps |
+| `:STATUS` | Get status (Pos, Busy, Homed) |
+| `:STOP` | Emergency stop |
+| `:HOMEY` | Home Y-axis (StallGuard) |
+| `:SPDX <n>` | Azimuth speed (step/s) |
+| `:SPDY <n>` | Altitude speed (step/s) |
+| `:ACCX <n>` | Azimuth acceleration (step/s²) |
+| `:ACCY <n>` | Altitude acceleration (step/s²) |
+| `:SAVE` | Save configuration to flash |
 
-## Schrittberechnung
+## Step Calculation
 
 ```
-steps = round((grad / 360) × steps_per_rev × microsteps × gear_ratio)
+steps = round((degrees / 360) × steps_per_rev × microsteps × gear_ratio)
 ```
 
-Identisch mit der Formel in `platedual.py`.
+Identical to the formula in `platedual.py`.
 
-## Projektstruktur
+## Project Structure
 
 ```
 nina.plugin.aapa/
-├── AAPAPlugin.cs                          # Plugin-Manifest (MEF Export)
+├── AAPAPlugin.cs                          # Plugin manifest (MEF Export)
 ├── NINA.Plugin.AAPA.csproj
 │
 ├── AAPA/
-│   ├── AAPAControllerService.cs           # Serielle Kommunikation + Auto-Discovery
-│   └── AAPAStatus.cs                      # Status-Datenmodell
+│   ├── AAPAControllerService.cs           # Serial communication + auto-discovery
+│   └── AAPAStatus.cs                      # Status data model
 │
 ├── Alignment/
-│   ├── TPPALogMonitor.cs                  # TPPA-Log Dateiüberwachung
-│   ├── AlignmentEngine.cs                 # Fehler → Schritte Berechnung
-│   └── AutoPilotController.cs             # Automatische Korrekturschleife
+│   ├── TPPALogMonitor.cs                  # TPPA log file monitoring
+│   ├── AlignmentEngine.cs                 # Error → steps calculation
+│   ├── AutoPilotController.cs             # Automatic correction loop
+│   └── RatioCalibrationController.cs      # Calculates Gear Ratio from movement
 │
 ├── Dockables/
 │   ├── AAPADockable.cs                    # IDockableVM MEF Export
@@ -135,13 +136,13 @@ nina.plugin.aapa/
 │
 └── Properties/
     ├── AssemblyInfo.cs
-    ├── Settings.Designer.cs               # Typisierte Settings
+    ├── Settings.Designer.cs               # Typed settings
     └── Settings.settings
 ```
 
-## Lizenz
+## License
 
-MIT — Basierend auf dem NINA Plugin Template von isbeorn.
+MIT — Based on the NINA Plugin Template by isbeorn.
 
 ## Links
 
