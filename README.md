@@ -81,9 +81,6 @@ steps = round((degrees / 360) × steps_per_rev × microsteps × gear_ratio)
 Identical to the formula in `platedual.py`.
 
 
-## License
-
-MIT — Based on the NINA Plugin Template by isbeorn.
 
 ## Links
 
