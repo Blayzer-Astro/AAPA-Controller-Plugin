@@ -24,7 +24,7 @@ This plugin replaces the standalone `platedual.py` / `platedual.exe` tool and in
 
 ## Requirements
 
-1. AAPA with custom firmware 
+1. AAPA with custom firmware (At the moment you can find it here: https://drive.google.com/file/d/1RPPMFIZRRZnLsH_wvVM96njePu-wZBmS/view?usp=drive_link)
 2. NINA
 3. TPPA plugin
 4. AAPA Controller Plugin
