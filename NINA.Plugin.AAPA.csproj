@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <AssemblyName>NINA.Plugin.AAPA</AssemblyName>
+    <RootNamespace>NINA.Plugins.AAPA</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>12</LangVersion>
+    <!-- Suppress auto-generated assembly attributes; we provide them in Properties/AssemblyInfo.cs -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- NINA Plugin SDK (provides NINA.Plugin, NINA.Core, NINA.Profile, NINA.WPF.Base, NINA.Sequencer) -->
+    <PackageReference Include="NINA.Plugin" Version="*" />
+    <!-- Newtonsoft.Json for sequence serialisation (already in NINA, referenced here for compilation) -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.*" />
+  </ItemGroup>
+
+
+
+  <!-- Settings file -->
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+
+  <!--
+    Post-build: copy the DLL into the NINA 3.x plugins folder.
+    NINA 3.x expects plugins in: %LOCALAPPDATA%\NINA\Plugins\3.0.0\<PluginName>\
+  -->
+  <Target Name="DeployToNINA" AfterTargets="Build">
+    <PropertyGroup>
+      <NINAPluginDir>$(LOCALAPPDATA)\NINA\Plugins\3.0.0\NINA.Plugin.AAPA\</NINAPluginDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(NINAPluginDir)" Condition="!Exists('$(NINAPluginDir)')" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll"
+          DestinationFolder="$(NINAPluginDir)"
+          SkipUnchangedFiles="true" />
+    <Message Text="Deployed $(AssemblyName).dll → $(NINAPluginDir)" Importance="high" />
+  </Target>
+
+</Project>

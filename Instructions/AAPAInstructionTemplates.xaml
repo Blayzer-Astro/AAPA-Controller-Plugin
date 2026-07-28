@@ -1,0 +1,78 @@
+<ResourceDictionary
+    x:Class="NINA.Plugins.AAPA.Instructions.AAPAInstructionTemplates"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:NINA.Plugins.AAPA.Instructions">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         AAPA Auto-Align — Sequence Item Template
+         Shown in the NINA Sequencer instruction editor
+    ════════════════════════════════════════════════════════════════ -->
+    <DataTemplate x:Key="AAPAAlignInstruction_Mini" DataType="{x:Type local:AAPAAlignInstruction}">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="🔭 AAPA Auto-Align" FontWeight="Bold"
+                       Foreground="{StaticResource PrimaryBrush}"
+                       VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding ToleranceDegrees, StringFormat=' | Tol: {0}°'}"
+                       Foreground="{StaticResource SecondaryBrush}"
+                       VerticalAlignment="Center" Margin="4,0,0,0"/>
+            <TextBlock Text="{Binding MaxIterations, StringFormat=' | Max: {0}'}"
+                       Foreground="{StaticResource SecondaryBrush}"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type local:AAPAAlignInstruction}">
+        <StackPanel Margin="6">
+            <TextBlock Text="AAPA Auto-Align"
+                       FontSize="13" FontWeight="Bold"
+                       Foreground="{StaticResource PrimaryBrush}"
+                       Margin="0,0,0,8"/>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="120"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Tolerance (degrees):"
+                           VerticalAlignment="Center" Margin="0,4,8,4"/>
+                <TextBox Grid.Row="0" Grid.Column="1"
+                         Text="{Binding ToleranceDegrees}"
+                         Margin="0,4,16,4"
+                         ToolTip="Stop when both Az and Alt errors are within this value (degrees). E.g. 0.01 = ~36 arcsec."/>
+
+                <TextBlock Grid.Row="0" Grid.Column="2"
+                           Text="Settle time (seconds):"
+                           VerticalAlignment="Center" Margin="0,4,8,4"/>
+                <TextBox Grid.Row="0" Grid.Column="3"
+                         Text="{Binding SettleTimeSeconds}"
+                         Margin="0,4,0,4"
+                         ToolTip="Seconds to wait after each move before requesting the next TPPA measurement."/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Text="Max iterations (0=unlimited):"
+                           VerticalAlignment="Center" Margin="0,4,8,4"/>
+                <TextBox Grid.Row="1" Grid.Column="1"
+                         Text="{Binding MaxIterations}"
+                         Margin="0,4,16,4"
+                         ToolTip="Maximum correction cycles. 0 means keep correcting until within tolerance."/>
+            </Grid>
+
+            <TextBlock
+                Text="ℹ️  Place this instruction after a TPPA measurement step. The AAPA device is auto-detected if not already connected."
+                TextWrapping="Wrap"
+                Foreground="{StaticResource SecondaryBrush}"
+                FontStyle="Italic"
+                Margin="0,8,0,0"/>
+        </StackPanel>
+    </DataTemplate>
+
+</ResourceDictionary>

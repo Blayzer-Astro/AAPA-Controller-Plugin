@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
+  <Profiles>
+    <Settings Profile="(Default)" Type="NINA.Plugins.AAPA.Properties.Settings">
+      <!-- Upgrade flag -->
+      <Setting Name="UpdateSettings" Type="System.Boolean" Value="False" />
+
+      <!-- Motor geometry -->
+      <Setting Name="StepsPerRevolution" Type="System.Int32"    Value="200"  />
+      <Setting Name="AzimuthMicrosteps"  Type="System.Int32"    Value="16"   />
+      <Setting Name="AltitudeMicrosteps" Type="System.Int32"    Value="16"   />
+      <Setting Name="AzimuthGearRatio"   Type="System.Double"   Value="1"    />
+      <Setting Name="AltitudeGearRatio"  Type="System.Double"   Value="1"    />
+      <Setting Name="ReverseAzimuth"     Type="System.Boolean"  Value="False"/>
+      <Setting Name="ReverseAltitude"    Type="System.Boolean"  Value="False"/>
+      <Setting Name="AzimuthBacklash"    Type="System.Int32"    Value="0"    />
+      <Setting Name="AltitudeBacklash"   Type="System.Int32"    Value="0"    />
+
+      <!-- Auto-Pilot -->
+      <Setting Name="ToleranceDegrees"    Type="System.Double"  Value="0.01" />
+      <Setting Name="SettleTimeSeconds"   Type="System.Double"  Value="3"    />
+      <Setting Name="MaxIterations"       Type="System.Int32"   Value="20"   />
+      <Setting Name="MaxCorrectionDegrees" Type="System.Double" Value="0.5"  />
+
+      <!-- AAPA Motor speed / accel -->
+      <Setting Name="AzimuthSpeed"   Type="System.Int32" Value="1500" />
+      <Setting Name="AltitudeSpeed"  Type="System.Int32" Value="1500" />
+      <Setting Name="AzimuthAccel"   Type="System.Int32" Value="500"  />
+      <Setting Name="AltitudeAccel"  Type="System.Int32" Value="500"  />
+    </Settings>
+  </Profiles>
+</SettingsFile>
