@@ -1,3 +1,9 @@
+**AAPA Controller Setup**:
+I created a tool for easy installation of the plugin and firmware.
+You can find the tool here:
+[AAPA Controller Setup](https://github.com/Blayzer-Astro/AAPA-Controller-Setup/tree/main)
+
+
 # NINA AAPA Controller Plugin
 
 A NINA plugin that connects the **AAPA** (Astrophilos Automated Polar Alignment) device to the **TPPA** (Three Point Polar Alignment) plugin.
