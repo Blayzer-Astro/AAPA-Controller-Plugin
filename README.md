@@ -1,4 +1,4 @@
-**AAPA Controller Setup**:
+## AAPA Controller Setup
 
 I created a tool for easy installation of the plugin and firmware.
 
