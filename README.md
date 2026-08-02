@@ -1,5 +1,7 @@
 **AAPA Controller Setup**:
+
 I created a tool for easy installation of the plugin and firmware.
+
 You can find the tool here:
 [AAPA Controller Setup](https://github.com/Blayzer-Astro/AAPA-Controller-Setup/tree/main)
 
