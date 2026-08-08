@@ -77,7 +77,9 @@ namespace NINA.Plugins.AAPA {
                     NewLine = "\n",
                     ReadTimeout = 500,
                     WriteTimeout = 500,
-                    Encoding = Encoding.ASCII
+                    Encoding = Encoding.ASCII,
+                    DtrEnable = false,
+                    RtsEnable = false
                 };
 
                 try {
