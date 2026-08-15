@@ -17,13 +17,13 @@ A NINA plugin that connects the **AAPA** (Astrophilos Automated Polar Alignment)
 |--|--|
 | **Hardware** | AAPA — FYSETC E4 (ESP32) with 2 stepper motors (Azimuth + Altitude) |
 | **Software** | Tested with: NINA 3.2 + TPPA 2.2.7.0 |
-| **Communication** | Serial (USB/COM) |
+| **Communication** | Serial (USB/COM) and WiFi|
 
 This plugin replaces the standalone `platedual.py` / `platedual.exe` tool and integrates AAPA control directly into NINA.
 
 ## Features
 
-- 🔌 **Auto-Connection** — Automatically detects the AAPA on all COM ports
+- 🔌 **Auto-Connection** — Automatically detects the AAPA on all COM ports, also you can connect the AAPA to your WiFi and enter the IP
 - 📡 **TPPA Integration** — Reads polar alignment errors from NINA logs in real-time
 - 🤖 **Auto-Pilot** — Calculates and automatically sends correction movements until within tolerance
 - 🕹️ **Manual Control** — Azimuth/Altitude click controls with configurable step sizes
@@ -45,8 +45,19 @@ This plugin replaces the standalone `platedual.py` / `platedual.exe` tool and in
 ### 1. Connecting
 
 In the dockable panel:
+
+COM / USB:
+1. Select COM
 1. Select the COM port (or "Auto" for automatic detection)
 2. Click **Connect**
+
+
+WiFi:
+1. Connect the AAPA to your WiFi
+2. Select IP
+3. Enter the IP from the AAPA
+2. Click **Connect**
+
 
 ### 2. Calibration
 
