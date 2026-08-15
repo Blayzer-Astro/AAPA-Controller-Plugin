@@ -11,8 +11,8 @@ using System.Runtime.InteropServices;
 [assembly: Guid("a3c8f4e2-7b1d-4a9e-b5f0-1c2d3e4f5a6b")]
 
 // Plugin version (Major.Minor.Patch.Build)
-[assembly: AssemblyVersion("5.0.0.1")]
-[assembly: AssemblyFileVersion("5.0.0.1")]
+[assembly: AssemblyVersion("5.0.0.9")]
+[assembly: AssemblyFileVersion("5.0.0.9")]
 
 // Short description (REQUIRED by NINA)
 [assembly: AssemblyMetadata("ShortDescription",

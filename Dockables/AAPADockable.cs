@@ -6,6 +6,8 @@ using NINA.Plugins.AAPA.Alignment;
 using NINA.Profile.Interfaces;
 using NINA.WPF.Base.ViewModel;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.IO.Ports;
@@ -218,6 +220,28 @@ namespace NINA.Plugins.AAPA.Dockables {
         private string _selectedPort = "";
         public string SelectedPort { get => _selectedPort; set { _selectedPort = value; RaisePropertyChanged(); } }
 
+        public List<string> ConnectionTypes { get; } = new List<string> { "COM", "IP" };
+
+        private string _selectedConnectionType = Properties.Settings.Default.ConnectionType;
+        public string SelectedConnectionType { 
+            get => _selectedConnectionType; 
+            set { 
+                _selectedConnectionType = value; 
+                RaisePropertyChanged(); 
+                SaveSettingsImpl();
+            } 
+        }
+
+        private string _ipAddress = Properties.Settings.Default.LastIpAddress;
+        public string IpAddress { 
+            get => _ipAddress; 
+            set { 
+                _ipAddress = value; 
+                RaisePropertyChanged();
+                SaveSettingsImpl();
+            } 
+        }
+
         private string _logText = "";
         public string LogText { get => _logText; set { _logText = value; RaisePropertyChanged(); } }
 
@@ -234,10 +258,22 @@ namespace NINA.Plugins.AAPA.Dockables {
                 if (IsConnected) {
                     _controller.Disconnect();
                 } else {
-                    var port = SelectedPort == "Auto" ? null : SelectedPort;
-                    var ok = await _controller.ConnectAsync(port);
-                    if (!ok) Application.Current?.Dispatcher.InvokeAsync(() =>
-                        Notification.ShowError("AAPA: No device found. Check COM port."));
+                    string? connectionTarget = SelectedConnectionType == "IP" 
+                        ? IpAddress 
+                        : (SelectedPort == "Auto" ? null : SelectedPort);
+                    
+                    var ok = await _controller.ConnectAsync(connectionTarget);
+                    if (!ok) {
+                        string errorMsg = SelectedConnectionType == "IP" 
+                            ? $"AAPA: IP connection to {IpAddress} failed." 
+                            : "AAPA: COM port connection failed.";
+                        Application.Current?.Dispatcher.InvokeAsync(() => Notification.ShowError(errorMsg));
+                    } else {
+                        string successMsg = SelectedConnectionType == "IP"
+                            ? $"AAPA connected via IP ({IpAddress})!"
+                            : "AAPA connected via COM port!";
+                        Application.Current?.Dispatcher.InvokeAsync(() => Notification.ShowSuccess(successMsg));
+                    }
                 }
             });
         });
@@ -274,6 +310,10 @@ namespace NINA.Plugins.AAPA.Dockables {
 
         private RelayCommand? _startAutoPilotCommand;
         public RelayCommand StartAutoPilotCommand => _startAutoPilotCommand ??= new RelayCommand((object o) => {
+            StartAutoPilot();
+        });
+
+        private void StartAutoPilot() {
             if (AutoPilotRunning) return;
             SaveSettingsImpl();
             UpdateEngine();
@@ -306,7 +346,7 @@ namespace NINA.Plugins.AAPA.Dockables {
                     AppendLog(msg);
                 });
             });
-        });
+        }
 
         private RelayCommand? _stopAutoPilotCommand;
         public RelayCommand StopAutoPilotCommand => _stopAutoPilotCommand ??= new RelayCommand((object o) => {
@@ -348,6 +388,8 @@ namespace NINA.Plugins.AAPA.Dockables {
 
         private void SaveSettingsImpl() {
             var s = Properties.Settings.Default;
+            s.ConnectionType         = SelectedConnectionType;
+            s.LastIpAddress          = IpAddress;
             s.StepsPerRevolution     = StepsPerRevolution;
             s.AzimuthMicrosteps      = AzimuthMicrosteps;
             s.AltitudeMicrosteps     = AltitudeMicrosteps;

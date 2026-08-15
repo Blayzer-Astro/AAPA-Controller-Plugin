@@ -46,16 +46,50 @@
                 <GroupBox Header="Connection" Margin="0,0,0,6">
                     <StackPanel Orientation="Vertical" Margin="4">
                         <StackPanel Orientation="Horizontal" Margin="0,4">
-                            <TextBlock Text="COM Port:" Width="80" VerticalAlignment="Center"/>
-                            <ComboBox ItemsSource="{Binding AvailablePorts}"
-                                      SelectedItem="{Binding SelectedPort}"
-                                      Width="110" Margin="4,0"/>
-                            <Button Content="↻" Width="30"
-                                    Command="{Binding RefreshPortsCommand}"
-                                    Margin="2,0" ToolTip="Refresh port list"/>
+                            <TextBlock Text="Mode:" Width="40" VerticalAlignment="Center"/>
+                            <ComboBox ItemsSource="{Binding ConnectionTypes}"
+                                      SelectedItem="{Binding SelectedConnectionType}"
+                                      Width="55" Margin="4,0"/>
+
+                            <Grid Width="114" Margin="4,0">
+                                <!-- IP Address Input -->
+                                <TextBox Text="{Binding IpAddress}" VerticalAlignment="Center">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedConnectionType}" Value="IP">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+
+                                <!-- COM Port Selector -->
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedConnectionType}" Value="COM">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <ComboBox ItemsSource="{Binding AvailablePorts}"
+                                              SelectedItem="{Binding SelectedPort}"
+                                              Width="80"/>
+                                    <Button Content="↻" Width="30"
+                                            Command="{Binding RefreshPortsCommand}"
+                                            Margin="4,0,0,0" ToolTip="Refresh port list"/>
+                                </StackPanel>
+                            </Grid>
+
                             <Button Content="{Binding ConnectButtonLabel}"
                                     Command="{Binding ConnectToggleCommand}"
-                                    Width="90" Margin="6,0"/>
+                                    Width="80" Margin="4,0"/>
                         </StackPanel>
 
                         <!-- Status row -->
@@ -245,7 +279,7 @@
                         <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                             <Button Content="▶ Start Auto-Pilot"
                                     Command="{Binding StartAutoPilotCommand}"
-                                    Width="140" Margin="0,0,8,0"
+                                    Width="120" Margin="0,0,8,0"
                                     IsEnabled="{Binding IsConnected}"
                                     Style="{StaticResource GreenButton}"/>
                             <Button Content="■ Stop"

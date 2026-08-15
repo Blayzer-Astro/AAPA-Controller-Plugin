@@ -4,6 +4,8 @@
     <Settings Profile="(Default)" Type="NINA.Plugins.AAPA.Properties.Settings">
       <!-- Upgrade flag -->
       <Setting Name="UpdateSettings" Type="System.Boolean" Value="False" />
+      <Setting Name="ConnectionType" Type="System.String" Value="COM" />
+      <Setting Name="LastIpAddress" Type="System.String" Value="192.168.1.100" />
 
       <!-- Motor geometry -->
       <Setting Name="StepsPerRevolution" Type="System.Int32"    Value="200"  />

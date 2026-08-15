@@ -20,6 +20,18 @@ namespace NINA.Plugins.AAPA.Properties {
             set { this["UpdateSettings"] = value; }
         }
 
+        [UserScopedSetting, DefaultSettingValue("COM")]
+        public string ConnectionType {
+            get => (string)this["ConnectionType"];
+            set { this["ConnectionType"] = value; }
+        }
+
+        [UserScopedSetting, DefaultSettingValue("192.168.1.100")]
+        public string LastIpAddress {
+            get => (string)this["LastIpAddress"];
+            set { this["LastIpAddress"] = value; }
+        }
+
         // ── Motor geometry ────────────────────────────────────────────────────
         [UserScopedSetting, DefaultSettingValue("200")]
         public int StepsPerRevolution {
