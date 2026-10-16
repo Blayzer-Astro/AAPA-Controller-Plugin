@@ -30,10 +30,11 @@ This plugin replaces the standalone `platedual.py` / `platedual.exe` tool and in
 - 🏠 **Homing** — Setting home position and returning to home
 - 📋 **Sequence Instruction** — "AAPA Auto-Align" for fully automated sequences
 - ⚙️ **Configurable** — Gear ratio, microstepping, backlash, speed/accel
+- 📱 **Touch-n-Stars** - Controlable via Touch-n-Stars (Web and App)
 
 ## Requirements
 
-1. AAPA with custom firmware (At the moment you can find it here: https://drive.google.com/file/d/1RPPMFIZRRZnLsH_wvVM96njePu-wZBmS/view?usp=drive_link)
+1. AAPA with custom firmware
 2. NINA
 3. TPPA plugin
 4. AAPA Controller Plugin
@@ -109,3 +110,4 @@ Identical to the formula in `platedual.py`.
 - [NINA](https://github.com/isbeorn/nina)
 - [TPPA Plugin](https://github.com/isbeorn/nina.plugin.polaralignment)
 - [NINA Plugin Template](https://github.com/isbeorn/nina.plugin.template)
+- [Touch-N-Stars] (https://github.com/Touch-N-Stars/Touch-N-Stars) 
