@@ -152,19 +152,20 @@ namespace NINA.Plugins.AAPA.Instructions {
         // ── Private ───────────────────────────────────────────────────────────
 
         private Task<PolarAlignmentError?> WaitForTPPAErrorAsync(CancellationToken ct) {
-            _errorTcs = new TaskCompletionSource<PolarAlignmentError?>();
-            ct.Register(() => _errorTcs?.TrySetResult(null));
+            var tcs = new TaskCompletionSource<PolarAlignmentError?>();
+            Interlocked.Exchange(ref _errorTcs, tcs);
+            ct.Register(() => tcs.TrySetResult(null));
 
             // Timeout after 2 minutes
             var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
-            cts.Token.Register(() => _errorTcs?.TrySetResult(null));
+            cts.Token.Register(() => tcs.TrySetResult(null));
 
-            return _errorTcs.Task;
+            return tcs.Task;
         }
 
         private void OnErrorDetected(object? sender, PolarAlignmentError error) {
-            _errorTcs?.TrySetResult(error);
-            _errorTcs = null;
+            var tcs = Interlocked.Exchange(ref _errorTcs, null);
+            tcs?.TrySetResult(error);
         }
     }
 }

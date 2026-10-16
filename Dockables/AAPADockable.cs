@@ -49,11 +49,11 @@ namespace NINA.Plugins.AAPA.Dockables {
 
 
 
-            _controller = AAPAPlugin.ControllerService;
-            _logMonitor = new TPPALogMonitor();
-            _engine     = BuildEngine();
-            _autoPilot  = new AutoPilotController(_controller, _engine);
-            _calibrationController = new RatioCalibrationController(_controller, _engine);
+            _controller = AAPACore.Instance.Controller;
+            _logMonitor = AAPACore.Instance.LogMonitor;
+            _engine     = AAPACore.Instance.Engine;
+            _autoPilot  = AAPACore.Instance.AutoPilot;
+            _calibrationController = AAPACore.Instance.CalibrationController;
 
             // Wire events
             _controller.ConnectionChanged += (_, connected) => {
@@ -101,12 +101,89 @@ namespace NINA.Plugins.AAPA.Dockables {
                         LastCorrectionAz  = args.Correction.AzimuthSteps;
                         LastCorrectionAlt = args.Correction.AltitudeSteps;
                     }
-                    if (args.IsDone) AutoPilotRunning = false;
                 });
             };
 
+            AAPACore.Instance.AutoPilotStateChanged += (_, isRunning) => {
+                Application.Current?.Dispatcher.InvokeAsync(() => {
+                    if (!AAPACore.Instance.IsCalibrationRunning) AutoPilotRunning = isRunning;
+                });
+            };
+
+            AAPACore.Instance.CalibrationStateChanged += (_, isRunning) => {
+                Application.Current?.Dispatcher.InvokeAsync(() => {
+                    if (!AAPACore.Instance.IsAutoPilotRunning) AutoPilotRunning = isRunning;
+                });
+            };
+
+            Properties.Settings.Default.PropertyChanged += (_, e) => {
+                Application.Current?.Dispatcher.InvokeAsync(() => {
+                    var s = Properties.Settings.Default;
+                    switch (e.PropertyName) {
+                        case nameof(s.ToleranceDegrees): if (ToleranceDegrees != s.ToleranceDegrees) ToleranceDegrees = s.ToleranceDegrees; break;
+                        case nameof(s.SettleTimeSeconds): if (SettleTimeSeconds != s.SettleTimeSeconds) SettleTimeSeconds = s.SettleTimeSeconds; break;
+                        case nameof(s.MaxIterations): if (MaxIterations != s.MaxIterations) MaxIterations = s.MaxIterations; break;
+                        case nameof(s.MaxCorrectionDegrees): if (MaxCorrectionDeg != s.MaxCorrectionDegrees) MaxCorrectionDeg = s.MaxCorrectionDegrees; break;
+                        case nameof(s.MotionTimeoutSeconds): if (MotionTimeoutSeconds != s.MotionTimeoutSeconds) MotionTimeoutSeconds = s.MotionTimeoutSeconds; break;
+                        case nameof(s.StepsPerRevolution): if (StepsPerRevolution != s.StepsPerRevolution) StepsPerRevolution = s.StepsPerRevolution; break;
+                        case nameof(s.AzimuthMicrosteps): if (AzimuthMicrosteps != s.AzimuthMicrosteps) AzimuthMicrosteps = s.AzimuthMicrosteps; break;
+                        case nameof(s.AltitudeMicrosteps): if (AltitudeMicrosteps != s.AltitudeMicrosteps) AltitudeMicrosteps = s.AltitudeMicrosteps; break;
+                        case nameof(s.AzimuthGearRatio): if (AzimuthGearRatio != s.AzimuthGearRatio) AzimuthGearRatio = s.AzimuthGearRatio; break;
+                        case nameof(s.AltitudeGearRatio): if (AltitudeGearRatio != s.AltitudeGearRatio) AltitudeGearRatio = s.AltitudeGearRatio; break;
+                        case nameof(s.ReverseAzimuth): if (ReverseAzimuth != s.ReverseAzimuth) ReverseAzimuth = s.ReverseAzimuth; break;
+                        case nameof(s.ReverseAltitude): if (ReverseAltitude != s.ReverseAltitude) ReverseAltitude = s.ReverseAltitude; break;
+                        case nameof(s.AzimuthBacklash): if (AzimuthBacklash != s.AzimuthBacklash) AzimuthBacklash = s.AzimuthBacklash; break;
+                        case nameof(s.AltitudeBacklash): if (AltitudeBacklash != s.AltitudeBacklash) AltitudeBacklash = s.AltitudeBacklash; break;
+                        
+                        case nameof(s.AzimuthSpeed): if (AzimuthSpeed != s.AzimuthSpeed) AzimuthSpeed = s.AzimuthSpeed; break;
+                        case nameof(s.AltitudeSpeed): if (AltitudeSpeed != s.AltitudeSpeed) AltitudeSpeed = s.AltitudeSpeed; break;
+                        case nameof(s.AzimuthAccel): if (AzimuthAccel != s.AzimuthAccel) AzimuthAccel = s.AzimuthAccel; break;
+                        case nameof(s.AltitudeAccel): if (AltitudeAccel != s.AltitudeAccel) AltitudeAccel = s.AltitudeAccel; break;
+                        case nameof(s.MinYLimit): if (MinYLimit != s.MinYLimit) MinYLimit = s.MinYLimit; break;
+                        case nameof(s.MaxYLimit): if (MaxYLimit != s.MaxYLimit) MaxYLimit = s.MaxYLimit; break;
+                        case nameof(s.CalibrationSteps): if (CalibrationSteps != s.CalibrationSteps) CalibrationSteps = s.CalibrationSteps; break;
+                        case nameof(s.LastIpAddress): if (IpAddress != s.LastIpAddress) IpAddress = s.LastIpAddress; break;
+                        
+                        case nameof(s.EnableWebsocket): if (EnableWebsocket != s.EnableWebsocket) EnableWebsocket = s.EnableWebsocket; break;
+                        case nameof(s.WebsocketPort): if (WebsocketPort != s.WebsocketPort) WebsocketPort = s.WebsocketPort; break;
+                        case nameof(s.NudgeDegrees): if (NudgeDegrees != s.NudgeDegrees) NudgeDegrees = s.NudgeDegrees; break;
+                    }
+                });
+            };
+
+            this.PropertyChanged += (_, e) => {
+                var s = Properties.Settings.Default;
+                switch (e.PropertyName) {
+                    case nameof(ToleranceDegrees): if (s.ToleranceDegrees != ToleranceDegrees) s.ToleranceDegrees = ToleranceDegrees; break;
+                    case nameof(SettleTimeSeconds): if (s.SettleTimeSeconds != SettleTimeSeconds) s.SettleTimeSeconds = SettleTimeSeconds; break;
+                    case nameof(MaxIterations): if (s.MaxIterations != MaxIterations) s.MaxIterations = MaxIterations; break;
+                    case nameof(MaxCorrectionDeg): if (s.MaxCorrectionDegrees != MaxCorrectionDeg) s.MaxCorrectionDegrees = MaxCorrectionDeg; break;
+                    case nameof(MotionTimeoutSeconds): if (s.MotionTimeoutSeconds != MotionTimeoutSeconds) s.MotionTimeoutSeconds = MotionTimeoutSeconds; break;
+                    case nameof(StepsPerRevolution): if (s.StepsPerRevolution != StepsPerRevolution) s.StepsPerRevolution = StepsPerRevolution; break;
+                    case nameof(AzimuthMicrosteps): if (s.AzimuthMicrosteps != AzimuthMicrosteps) s.AzimuthMicrosteps = AzimuthMicrosteps; break;
+                    case nameof(AltitudeMicrosteps): if (s.AltitudeMicrosteps != AltitudeMicrosteps) s.AltitudeMicrosteps = AltitudeMicrosteps; break;
+                    case nameof(AzimuthGearRatio): if (s.AzimuthGearRatio != AzimuthGearRatio) s.AzimuthGearRatio = AzimuthGearRatio; break;
+                    case nameof(AltitudeGearRatio): if (s.AltitudeGearRatio != AltitudeGearRatio) s.AltitudeGearRatio = AltitudeGearRatio; break;
+                    case nameof(ReverseAzimuth): if (s.ReverseAzimuth != ReverseAzimuth) s.ReverseAzimuth = ReverseAzimuth; break;
+                    case nameof(ReverseAltitude): if (s.ReverseAltitude != ReverseAltitude) s.ReverseAltitude = ReverseAltitude; break;
+                    case nameof(AzimuthBacklash): if (s.AzimuthBacklash != AzimuthBacklash) s.AzimuthBacklash = AzimuthBacklash; break;
+                    case nameof(AltitudeBacklash): if (s.AltitudeBacklash != AltitudeBacklash) s.AltitudeBacklash = AltitudeBacklash; break;
+                    
+                    case nameof(AzimuthSpeed): if (s.AzimuthSpeed != AzimuthSpeed) s.AzimuthSpeed = AzimuthSpeed; break;
+                    case nameof(AltitudeSpeed): if (s.AltitudeSpeed != AltitudeSpeed) s.AltitudeSpeed = AltitudeSpeed; break;
+                    case nameof(AzimuthAccel): if (s.AzimuthAccel != AzimuthAccel) s.AzimuthAccel = AzimuthAccel; break;
+                    case nameof(AltitudeAccel): if (s.AltitudeAccel != AltitudeAccel) s.AltitudeAccel = AltitudeAccel; break;
+                    case nameof(MinYLimit): if (s.MinYLimit != MinYLimit) s.MinYLimit = MinYLimit; break;
+                    case nameof(MaxYLimit): if (s.MaxYLimit != MaxYLimit) s.MaxYLimit = MaxYLimit; break;
+                    case nameof(CalibrationSteps): if (s.CalibrationSteps != CalibrationSteps) s.CalibrationSteps = CalibrationSteps; break;
+                    
+                    case nameof(EnableWebsocket): if (s.EnableWebsocket != EnableWebsocket) s.EnableWebsocket = EnableWebsocket; break;
+                    case nameof(WebsocketPort): if (s.WebsocketPort != WebsocketPort) s.WebsocketPort = WebsocketPort; break;
+                    case nameof(NudgeDegrees): if (s.NudgeDegrees != NudgeDegrees) s.NudgeDegrees = NudgeDegrees; break;
+                }
+            };
+
             RefreshPortsImpl();
-            _logMonitor.Start();
         }
 
         // ── Observable properties ─────────────────────────────────────────────
@@ -147,7 +224,7 @@ namespace NINA.Plugins.AAPA.Dockables {
         private int _autoPilotIteration;
         public int AutoPilotIteration { get => _autoPilotIteration; set { _autoPilotIteration = value; RaisePropertyChanged(); } }
 
-        private int _calibrationSteps = 10000;
+        private int _calibrationSteps = Properties.Settings.Default.CalibrationSteps;
         public int CalibrationSteps { get => _calibrationSteps; set { _calibrationSteps = value; RaisePropertyChanged(); } }
 
         private int _lastCorrectionAz;
@@ -193,6 +270,9 @@ namespace NINA.Plugins.AAPA.Dockables {
         private int _maxIterations = Properties.Settings.Default.MaxIterations;
         public int MaxIterations { get => _maxIterations; set { _maxIterations = value; RaisePropertyChanged(); } }
 
+        private int _motionTimeoutSeconds = Properties.Settings.Default.MotionTimeoutSeconds;
+        public int MotionTimeoutSeconds { get => _motionTimeoutSeconds; set { _motionTimeoutSeconds = value; RaisePropertyChanged(); } }
+
         private double _maxCorrectionDeg = Properties.Settings.Default.MaxCorrectionDegrees;
         public double MaxCorrectionDeg { get => _maxCorrectionDeg; set { _maxCorrectionDeg = value; RaisePropertyChanged(); } }
 
@@ -208,11 +288,17 @@ namespace NINA.Plugins.AAPA.Dockables {
         private int _altitudeAccel = Properties.Settings.Default.AltitudeAccel;
         public int AltitudeAccel { get => _altitudeAccel; set { _altitudeAccel = value; RaisePropertyChanged(); } }
 
-        private long _minYLimit = -100000;
+        private long _minYLimit = Properties.Settings.Default.MinYLimit;
         public long MinYLimit { get => _minYLimit; set { _minYLimit = value; RaisePropertyChanged(); } }
 
-        private long _maxYLimit = 100000;
+        private long _maxYLimit = Properties.Settings.Default.MaxYLimit;
         public long MaxYLimit { get => _maxYLimit; set { _maxYLimit = value; RaisePropertyChanged(); } }
+        
+        private bool _enableWebsocket = Properties.Settings.Default.EnableWebsocket;
+        public bool EnableWebsocket { get => _enableWebsocket; set { _enableWebsocket = value; RaisePropertyChanged(); } }
+        
+        private int _websocketPort = Properties.Settings.Default.WebsocketPort;
+        public int WebsocketPort { get => _websocketPort; set { _websocketPort = value; RaisePropertyChanged(); } }
 
         private ObservableCollection<string> _availablePorts = new();
         public ObservableCollection<string> AvailablePorts { get => _availablePorts; set { _availablePorts = value; RaisePropertyChanged(); } }
@@ -245,7 +331,7 @@ namespace NINA.Plugins.AAPA.Dockables {
         private string _logText = "";
         public string LogText { get => _logText; set { _logText = value; RaisePropertyChanged(); } }
 
-        private double _nudgeDegrees = 0.1;
+        private double _nudgeDegrees = Properties.Settings.Default.NudgeDegrees;
         public double NudgeDegrees { get => _nudgeDegrees; set { _nudgeDegrees = value; RaisePropertyChanged(); } }
 
         public string ConnectButtonLabel => IsConnected ? "Disconnect" : "Connect";
@@ -314,44 +400,14 @@ namespace NINA.Plugins.AAPA.Dockables {
         });
 
         private void StartAutoPilot() {
-            if (AutoPilotRunning) return;
             SaveSettingsImpl();
-            UpdateEngine();
-
-            AutoPilotRunning = true;
-            AutoPilotIteration = 0;
-            _autoPilotCts = new CancellationTokenSource();
-
-            _autoPilot.ToleranceDegrees = ToleranceDegrees;
-            _autoPilot.MaxIterations    = MaxIterations;
-            _autoPilot.SettleTimeSeconds = SettleTimeSeconds;
-
-            _ = Task.Run(async () => {
-                var result = await _autoPilot.RunAsync(WaitForTPPAErrorAsync, _autoPilotCts.Token);
-                
-                if (result == AutoPilotResult.Success) {
-                    await _controller.SaveConfigAsync();
-                }
-
-                Application.Current?.Dispatcher.InvokeAsync(() => {
-                    AutoPilotRunning = false;
-                    var msg = result switch {
-                        AutoPilotResult.Success => "Auto-Pilot finished — alignment within tolerance! (Positions saved)",
-                        AutoPilotResult.Cancelled => "Auto-Pilot cancelled.",
-                        AutoPilotResult.MaxIterationsReached => "Auto-Pilot: max iterations reached.",
-                        AutoPilotResult.NoTPPAData => "Auto-Pilot: no TPPA data received. Is TPPA running?",
-                        AutoPilotResult.MotionTimeout => "Auto-Pilot: AAPA motion timeout.",
-                        _ => $"Auto-Pilot stopped: {result}"
-                    };
-                    AppendLog(msg);
-                });
-            });
+            AAPACore.Instance.StartAutoPilot();
         }
 
         private RelayCommand? _stopAutoPilotCommand;
         public RelayCommand StopAutoPilotCommand => _stopAutoPilotCommand ??= new RelayCommand((object o) => {
-            _autoPilotCts?.Cancel();
-            _errorTcs?.TrySetResult(null);
+            AAPACore.Instance.StopAutoPilot();
+            AAPACore.Instance.StopCalibration();
         });
 
         private RelayCommand? _sendSpeedAccelCommand;
@@ -388,27 +444,34 @@ namespace NINA.Plugins.AAPA.Dockables {
 
         private void SaveSettingsImpl() {
             var s = Properties.Settings.Default;
-            s.ConnectionType         = SelectedConnectionType;
-            s.LastIpAddress          = IpAddress;
-            s.StepsPerRevolution     = StepsPerRevolution;
-            s.AzimuthMicrosteps      = AzimuthMicrosteps;
-            s.AltitudeMicrosteps     = AltitudeMicrosteps;
-            s.AzimuthGearRatio       = AzimuthGearRatio;
-            s.AltitudeGearRatio      = AltitudeGearRatio;
-            s.ReverseAzimuth         = ReverseAzimuth;
-            s.ReverseAltitude        = ReverseAltitude;
-            s.AzimuthBacklash        = AzimuthBacklash;
-            s.AltitudeBacklash       = AltitudeBacklash;
-            s.ToleranceDegrees       = ToleranceDegrees;
-            s.SettleTimeSeconds      = SettleTimeSeconds;
-            s.MaxIterations          = MaxIterations;
-            s.MaxCorrectionDegrees   = MaxCorrectionDeg;
-            s.AzimuthSpeed           = AzimuthSpeed;
-            s.AltitudeSpeed          = AltitudeSpeed;
-            s.AzimuthAccel           = AzimuthAccel;
-            s.AltitudeAccel          = AltitudeAccel;
+            if (s.ConnectionType != SelectedConnectionType) s.ConnectionType = SelectedConnectionType;
+            if (s.LastIpAddress != IpAddress) s.LastIpAddress = IpAddress;
+            if (s.StepsPerRevolution != StepsPerRevolution) s.StepsPerRevolution = StepsPerRevolution;
+            if (s.AzimuthMicrosteps != AzimuthMicrosteps) s.AzimuthMicrosteps = AzimuthMicrosteps;
+            if (s.AltitudeMicrosteps != AltitudeMicrosteps) s.AltitudeMicrosteps = AltitudeMicrosteps;
+            if (s.AzimuthGearRatio != AzimuthGearRatio) s.AzimuthGearRatio = AzimuthGearRatio;
+            if (s.AltitudeGearRatio != AltitudeGearRatio) s.AltitudeGearRatio = AltitudeGearRatio;
+            if (s.ReverseAzimuth != ReverseAzimuth) s.ReverseAzimuth = ReverseAzimuth;
+            if (s.ReverseAltitude != ReverseAltitude) s.ReverseAltitude = ReverseAltitude;
+            if (s.AzimuthBacklash != AzimuthBacklash) s.AzimuthBacklash = AzimuthBacklash;
+            if (s.AltitudeBacklash != AltitudeBacklash) s.AltitudeBacklash = AltitudeBacklash;
+            if (s.ToleranceDegrees != ToleranceDegrees) s.ToleranceDegrees = ToleranceDegrees;
+            if (s.SettleTimeSeconds != SettleTimeSeconds) s.SettleTimeSeconds = SettleTimeSeconds;
+            if (s.MaxIterations != MaxIterations) s.MaxIterations = MaxIterations;
+            if (s.MotionTimeoutSeconds != MotionTimeoutSeconds) s.MotionTimeoutSeconds = MotionTimeoutSeconds;
+            if (s.MaxCorrectionDegrees != MaxCorrectionDeg) s.MaxCorrectionDegrees = MaxCorrectionDeg;
+            if (s.AzimuthSpeed != AzimuthSpeed) s.AzimuthSpeed = AzimuthSpeed;
+            if (s.AltitudeSpeed != AltitudeSpeed) s.AltitudeSpeed = AltitudeSpeed;
+            if (s.AzimuthAccel != AzimuthAccel) s.AzimuthAccel = AzimuthAccel;
+            if (s.AltitudeAccel != AltitudeAccel) s.AltitudeAccel = AltitudeAccel;
+            if (s.MinYLimit != MinYLimit) s.MinYLimit = MinYLimit;
+            if (s.MaxYLimit != MaxYLimit) s.MaxYLimit = MaxYLimit;
+            if (s.CalibrationSteps != CalibrationSteps) s.CalibrationSteps = CalibrationSteps;
+            if (s.EnableWebsocket != EnableWebsocket) s.EnableWebsocket = EnableWebsocket;
+            if (s.WebsocketPort != WebsocketPort) s.WebsocketPort = WebsocketPort;
+            if (s.NudgeDegrees != NudgeDegrees) s.NudgeDegrees = NudgeDegrees;
             CoreUtil.SaveSettings(s);
-            UpdateEngine();
+            AAPACore.Instance.UpdateEngineSettings();
             AppendLog("Settings saved.");
         }
 
@@ -427,13 +490,11 @@ namespace NINA.Plugins.AAPA.Dockables {
         private async Task RunCalibrationAsync(CalibrationAxis axis) {
             if (AutoPilotRunning) return;
             SaveSettingsImpl();
-            UpdateEngine();
+            AAPACore.Instance.UpdateEngineSettings();
             AutoPilotRunning = true; // Use same flag to disable UI
-            _calibrationCts = new CancellationTokenSource();
-
+            
             _ = Task.Run(async () => {
-                var result = await _calibrationController.RunCalibrationAsync(
-                    axis, CalibrationSteps, WaitForTPPAErrorAsync, _calibrationCts.Token);
+                var result = await AAPACore.Instance.StartCalibrationAsync(axis, CalibrationSteps, CancellationToken.None);
                 
                 if (result.Success) {
                     if (axis == CalibrationAxis.Azimuth) AzimuthGearRatio = result.NewGearRatio;
@@ -484,24 +545,14 @@ namespace NINA.Plugins.AAPA.Dockables {
             MaxCorrectionPerIterationDegrees = Properties.Settings.Default.MaxCorrectionDegrees,
         };
 
-        private void UpdateEngine() {
-            _engine.StepsPerRevolution = StepsPerRevolution;
-            _engine.AzimuthMicrosteps  = AzimuthMicrosteps;
-            _engine.AltitudeMicrosteps = AltitudeMicrosteps;
-            _engine.AzimuthGearRatio   = AzimuthGearRatio;
-            _engine.AltitudeGearRatio  = AltitudeGearRatio;
-            _engine.ReverseAzimuth     = ReverseAzimuth;
-            _engine.ReverseAltitude    = ReverseAltitude;
-            _engine.AzimuthBacklashSteps  = AzimuthBacklash;
-            _engine.AltitudeBacklashSteps = AltitudeBacklash;
-            _engine.MaxCorrectionPerIterationDegrees = MaxCorrectionDeg;
-        }
+
 
         private void AppendLog(string message) {
             var line = $"[{DateTime.Now:HH:mm:ss}] {message}";
             LogText = (LogText + "\n" + line).TrimStart('\n');
             var lines = LogText.Split('\n');
             if (lines.Length > 200) LogText = string.Join("\n", lines[^200..]);
+            AAPAWebSocketServer.Broadcast(line);
         }
     }
 }

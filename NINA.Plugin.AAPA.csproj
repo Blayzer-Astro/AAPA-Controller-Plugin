@@ -9,12 +9,13 @@
     <Platforms>x64</Platforms>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>12</LangVersion>
-    <!-- Suppress auto-generated assembly attributes; we provide them in Properties/AssemblyInfo.cs -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
     <!-- NINA Plugin SDK (provides NINA.Plugin, NINA.Core, NINA.Profile, NINA.WPF.Base, NINA.Sequencer) -->
+    <PackageReference Include="Fleck" Version="1.2.0" />
     <PackageReference Include="NINA.Plugin" Version="*" />
     <!-- Newtonsoft.Json for sequence serialisation (already in NINA, referenced here for compilation) -->
     <PackageReference Include="Newtonsoft.Json" Version="13.*" />
@@ -44,9 +45,7 @@
       <NINAPluginDir>$(LOCALAPPDATA)\NINA\Plugins\3.0.0\NINA.Plugin.AAPA\</NINAPluginDir>
     </PropertyGroup>
     <MakeDir Directories="$(NINAPluginDir)" Condition="!Exists('$(NINAPluginDir)')" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll"
-          DestinationFolder="$(NINAPluginDir)"
-          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(NINAPluginDir)" SkipUnchangedFiles="true" />
     <Message Text="Deployed $(AssemblyName).dll → $(NINAPluginDir)" Importance="high" />
   </Target>
 

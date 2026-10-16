@@ -28,6 +28,9 @@ namespace NINA.Plugins.AAPA.Alignment {
         /// <summary>Seconds to wait after each move before the next TPPA measurement.</summary>
         public double SettleTimeSeconds { get; set; } = 3.0;
 
+        /// <summary>Timeout in seconds waiting for a move to finish.</summary>
+        public int MotionTimeoutSeconds { get; set; } = 30;
+
         // ── Events ────────────────────────────────────────────────────────────
         public event EventHandler<AutoPilotProgressEventArgs>? ProgressUpdated;
         public event EventHandler<string>? LogMessage;
@@ -78,7 +81,7 @@ namespace NINA.Plugins.AAPA.Alignment {
                     if (error.IsWithinTolerance(ToleranceDegrees)) {
                         toleranceHits++;
                         if (toleranceHits >= 3) {
-                            Log($"Within tolerance ({ToleranceDegrees * 3600:0} arcsec) for 3 consecutive measurements. Done!");
+                            Log(System.FormattableString.Invariant($"Within tolerance ({ToleranceDegrees * 3600:0} arcsec) for 3 consecutive measurements. Done!"));
                             RaiseProgress(iteration, error, null, done: true);
                             return AutoPilotResult.Success;
                         } else {
@@ -108,7 +111,7 @@ namespace NINA.Plugins.AAPA.Alignment {
 
                     // ── Step 5: Wait for AAPA motion + settle ─────────────────
                     // Poll busy flag until motion complete
-                    var motionTimeout = DateTime.UtcNow.AddSeconds(30);
+                    var motionTimeout = DateTime.UtcNow.AddSeconds(MotionTimeoutSeconds);
                     while (_aapa.Status.IsBusy && DateTime.UtcNow < motionTimeout) {
                         ct.ThrowIfCancellationRequested();
                         await Task.Delay(200, ct);
@@ -116,7 +119,7 @@ namespace NINA.Plugins.AAPA.Alignment {
                     }
 
                     if (_aapa.Status.IsBusy) {
-                        Log("Motion timeout — AAPA still busy after 30s.");
+                        Log($"Motion timeout — AAPA still busy after {MotionTimeoutSeconds}s.");
                         await _aapa.StopAsync(ct);
                         return AutoPilotResult.MotionTimeout;
                     }

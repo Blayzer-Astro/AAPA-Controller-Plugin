@@ -22,6 +22,8 @@ namespace NINA.Plugins.AAPA {
                 Properties.Settings.Default.UpdateSettings = false;
                 CoreUtil.SaveSettings(Properties.Settings.Default);
             }
+            // Start the WebSocket server globally
+            AAPAWebSocketServer.Start();
         }
 
         /// <summary>Shared AAPA hardware controller (singleton for the plugin lifetime).</summary>
@@ -29,6 +31,7 @@ namespace NINA.Plugins.AAPA {
 
         public override Task Teardown() {
             try {
+                AAPAWebSocketServer.Stop();
                 ControllerService?.Dispose();
             } catch { }
             return base.Teardown();

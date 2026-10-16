@@ -129,7 +129,6 @@ namespace NINA.Plugins.AAPA.Alignment {
         public bool IsZero => AzimuthSteps == 0 && AltitudeSteps == 0;
 
         public override string ToString() =>
-            $"Az: {AzimuthSteps:+0;-0} steps ({AzimuthCorrectionDegrees:+0.0000;-0.0000}°)  " +
-            $"Alt: {AltitudeSteps:+0;-0} steps ({AltitudeCorrectionDegrees:+0.0000;-0.0000}°)";
+            System.FormattableString.Invariant($"Az: {AzimuthSteps:+0;-0} steps ({AzimuthCorrectionDegrees:+0.0000;-0.0000}°)  Alt: {AltitudeSteps:+0;-0} steps ({AltitudeCorrectionDegrees:+0.0000;-0.0000}°)");
     }
 }

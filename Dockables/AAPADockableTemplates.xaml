@@ -274,6 +274,9 @@
                             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding MaxIterations}" Margin="0,4,8,4"/>
                             <TextBlock Grid.Row="1" Grid.Column="2" Text="Max Corr. (°):" Margin="0,4,8,4" VerticalAlignment="Center"/>
                             <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding MaxCorrectionDeg}" Margin="0,4,0,4"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Timeout (s):" Margin="0,4,8,4" VerticalAlignment="Center"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding MotionTimeoutSeconds}" Margin="0,4,8,4"/>
                         </Grid>
 
                         <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
@@ -398,6 +401,26 @@
                             </StackPanel>
                         </StackPanel>
                     </Expander>
+                </GroupBox>
+
+                <!-- ── WebSocket Settings ─────────────────────────── -->
+                <GroupBox Header="WebSocket Server" Margin="0,0,0,6">
+                    <StackPanel Margin="4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Grid.Column="0" Text="Enable Server:" Margin="0,3,8,3" VerticalAlignment="Center"/>
+                            <CheckBox Grid.Column="1" IsChecked="{Binding EnableWebsocket}" Margin="0,3,8,3" VerticalAlignment="Center" ToolTip="Enable the WebSocket API Server for remote control"/>
+                            
+                            <TextBlock Grid.Column="2" Text="Port:" Margin="0,3,8,3" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="3" Text="{Binding WebsocketPort}" Margin="0,3,0,3" ToolTip="WebSocket Server Port (Restart required to apply changes)"/>
+                        </Grid>
+                    </StackPanel>
                 </GroupBox>
 
                 <!-- ── Activity Log ───────────────────────────── -->

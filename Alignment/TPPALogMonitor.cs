@@ -176,7 +176,7 @@ namespace NINA.Plugins.AAPA.Alignment {
                     if (parsed) {
                         var error = new PolarAlignmentError(az, alt);
                         LastError = error;
-                        Logger.Info($"[AAPA] TPPA error read — Az: {az:+0.0000;-0.0000}° Alt: {alt:+0.0000;-0.0000}°");
+                        Logger.Info(System.FormattableString.Invariant($"[AAPA] TPPA error read — Az: {az:+0.0000;-0.0000}° Alt: {alt:+0.0000;-0.0000}°"));
                         ErrorDetected?.Invoke(this, error);
                         return;
                     }
@@ -207,6 +207,6 @@ namespace NINA.Plugins.AAPA.Alignment {
             Math.Abs(AltitudeErrorDegrees) <= toleranceDegrees;
 
         public override string ToString() =>
-            $"Az: {AzimuthErrorDegrees:+0.0000;-0.0000}°  Alt: {AltitudeErrorDegrees:+0.0000;-0.0000}°";
+            System.FormattableString.Invariant($"Az: {AzimuthErrorDegrees:+0.0000;-0.0000}°  Alt: {AltitudeErrorDegrees:+0.0000;-0.0000}°");
     }
 }

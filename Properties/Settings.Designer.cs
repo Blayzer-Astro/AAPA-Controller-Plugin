@@ -100,6 +100,12 @@ namespace NINA.Plugins.AAPA.Properties {
             set { this["SettleTimeSeconds"] = value; }
         }
 
+        [UserScopedSetting, DefaultSettingValue("30")]
+        public int MotionTimeoutSeconds {
+            get => (int)this["MotionTimeoutSeconds"];
+            set { this["MotionTimeoutSeconds"] = value; }
+        }
+
         [UserScopedSetting, DefaultSettingValue("20")]
         public int MaxIterations {
             get => (int)this["MaxIterations"];
@@ -135,6 +141,42 @@ namespace NINA.Plugins.AAPA.Properties {
         public int AltitudeAccel {
             get => (int)this["AltitudeAccel"];
             set { this["AltitudeAccel"] = value; }
+        }
+
+        [UserScopedSetting, DefaultSettingValue("-100000")]
+        public long MinYLimit {
+            get => (long)this["MinYLimit"];
+            set { this["MinYLimit"] = value; }
+        }
+
+        [UserScopedSetting, DefaultSettingValue("100000")]
+        public long MaxYLimit {
+            get => (long)this["MaxYLimit"];
+            set { this["MaxYLimit"] = value; }
+        }
+
+        [UserScopedSetting, DefaultSettingValue("10000")]
+        public int CalibrationSteps {
+            get => (int)this["CalibrationSteps"];
+            set { this["CalibrationSteps"] = value; }
+        }
+
+        [UserScopedSetting, DefaultSettingValue("True")]
+        public bool EnableWebsocket {
+            get => (bool)this["EnableWebsocket"];
+            set { this["EnableWebsocket"] = value; }
+        }
+
+        [UserScopedSetting, DefaultSettingValue("8081")]
+        public int WebsocketPort {
+            get => (int)this["WebsocketPort"];
+            set { this["WebsocketPort"] = value; }
+        }
+
+        [UserScopedSetting, DefaultSettingValue("0.5")]
+        public double NudgeDegrees {
+            get => (double)this["NudgeDegrees"];
+            set { this["NudgeDegrees"] = value; }
         }
     }
 }
