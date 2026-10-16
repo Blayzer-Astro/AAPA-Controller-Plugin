@@ -110,4 +110,4 @@ Identical to the formula in `platedual.py`.
 - [NINA](https://github.com/isbeorn/nina)
 - [TPPA Plugin](https://github.com/isbeorn/nina.plugin.polaralignment)
 - [NINA Plugin Template](https://github.com/isbeorn/nina.plugin.template)
-- [Touch-N-Stars] (https://github.com/Touch-N-Stars/Touch-N-Stars) 
+- [Touch-N-Stars](https://github.com/Touch-N-Stars/Touch-N-Stars) 
